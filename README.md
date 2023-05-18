@@ -1,11 +1,20 @@
 # rhacm-gitops
-Installation of RHACM and Openshift-Gitops. Deployment of Helm-based RHACM applications with external values files or kustomize.
+
+## Objectives
+
+Installation of RHACM and Openshift-Gitops. 
+
+Deployment of Helm-based RHACM applications with external value files or advanced helm customizations.
 
 Here are the contents of this article:
 
 A.  Installing Openshift Gitops (ArgoCD) on Hub Cluster
+
 B.  Integrating Openshift Gitops with Red Advanced Cluster Manager
+
 c.  Define and create applicationsset for deploying app
+
+These configurations allow a vanilla helm to be used, fully automatically, in RHACM and/or Gitops, without having to modify basic helm charts in any way.
 
 # A-B Installing Openshift-Gitops and RHACM
 
@@ -18,6 +27,11 @@ metadata:
   annotations: {}
   name: openshift-gitops
 spec: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-cluster-management
 ```
 2. Deployment of the operator
 
@@ -33,7 +47,27 @@ spec:
   name: openshift-gitops-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: open-cluster-management
+  namespace: open-cluster-management
+spec:
+  targetNamespaces:
+  - open-cluster-management  
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: advanced-cluster-management
+  namespace: open-cluster-management
+spec:
+  channel: release-2.7
+  installPlanApproval: Automatic
+  name: advanced-cluster-management
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
 ```
 
 3. RBAC configuration
@@ -183,6 +217,13 @@ spec:
         cpu: 250m
         memory: 1Gi
     sharding: {}
+---
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
+metadata:
+  name: multiclusterhub
+  namespace: open-cluster-management
+spec: {}    
 ```
 
 5. RHACM Integration with ArgoCD
