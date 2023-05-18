@@ -1,22 +1,21 @@
-# rhacm-gitops
+# RedHat Advanced Cluster Manager - Openshift Gitops
 
-## Objectives
+These configurations allow a vanilla helm to be used, fully automatically, in RHACM and/or Gitops, without modify basic helm charts in any way.
 
-Installation of RHACM and Openshift-Gitops. 
-
-Deployment of Helm-based RHACM applications with external value files or advanced helm customizations.
+We are going to see how deployment of Helm-based RHACM applications with external value files or advanced helm customizations.
 
 Here are the contents of this article:
 
-A.  Installing Openshift Gitops (ArgoCD) on Hub Cluster
+A.  Installing RedHat Advanced Cluster Manager (RHACM)
 
-B.  Integrating Openshift Gitops with Red Advanced Cluster Manager
+B.  Installing Openshift Gitops (ArgoCD) on Hub Cluster
 
-c.  Define and create applicationsset for deploying app
+C.  Integrating Openshift Gitops with Red Advanced Cluster Manager
 
-These configurations allow a vanilla helm to be used, fully automatically, in RHACM and/or Gitops, without having to modify basic helm charts in any way.
+D.  Define and create applicationsset for deploying app
 
-# A-B Installing Openshift-Gitops and RHACM
+
+# Installing Openshift-Gitops and RHACM
 
 1. create Namespace
 
@@ -87,7 +86,7 @@ roleRef:
   name: cluster-admin
 ```
 
-4. ARGOCD Cluster Installation
+4. ArgoCD Cluster Installation
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -225,16 +224,18 @@ metadata:
   namespace: open-cluster-management
 spec: {}    
 ```
-## RHACM RBAC
+
+5. RHACM RBAC
+
 ```bash
 oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin kube:admin
 oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin system:admin
 ```
 
 
-5. RHACM Integration with ArgoCD
+# Integrating Openshift Gitops with Red Advanced Cluster Manager
 
-the ManagedClusterSetBinding and placement are used to intercept and configure the clusters present on RHACM also in ArgoCD, it is possible to customize these configurations by excluding specific clusters.
+The ManagedClusterSetBinding and placement are used to intercept and configure the clusters present on RHACM also in ArgoCD, it is possible to customize these configurations by excluding specific clusters.
 
 ```yaml
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -282,7 +283,7 @@ spec:
 
 3 independent solutions were produced for application management using Gitops, we used the "wordpress" chart from https://charts.bitnami.com/bitnami as a demo.
 
-1. ApplicationSet with multiple sources
+**1. ApplicationSet with multiple sources**
 
 The first solution involves implementing an applicationset in argocd that leverages the wordpress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in argocd be configured and there must be a single values.yaml in the repo and path indicated in the applicationset.
 
@@ -389,7 +390,7 @@ values: |
       enableNipIoRedirect: false
 ```
 
-2. ApplicationSet with chart dependency
+**2. ApplicationSet with chart dependency**
 
 In this case we implemented a GIT containing a chart that exploits the helm chart present on bitnami repository as a dependency.
 
@@ -515,7 +516,7 @@ spec:
 
 ```
 
-3. ApplicationSet with kustomize
+**3. ApplicationSet with kustomize**
 
 This solution involves implementing kustomize for customization and ovveride on a per-cluster basis, and in particular is applicable with the following directory structure:
 
@@ -689,5 +690,7 @@ spec:
                 - local-cluster
 
 ```
+
+# Final result
 
 The end result of these implementations is the creation of An Argocd Application, derived from the applicationset and dynamically created based on the reference cluster.
