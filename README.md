@@ -225,6 +225,12 @@ metadata:
   namespace: open-cluster-management
 spec: {}    
 ```
+## RHACM RBAC
+```bash
+oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin kube:admin
+oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin system:admin
+```
+
 
 5. RHACM Integration with ArgoCD
 
