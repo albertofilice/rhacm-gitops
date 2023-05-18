@@ -17,7 +17,7 @@ D.  Define and create applicationsset for deploying app
 
 # Installing Openshift-Gitops and RHACM
 
-1. create Namespace
+1. Create Namespace
 
 ```yaml
 apiVersion: v1
