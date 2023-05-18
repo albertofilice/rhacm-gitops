@@ -1,0 +1,14 @@
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: wordpress-kustomize
+  annotations:
+    argocd.argoproj.io/hook: Skip  
+valuesInline:
+ingress:
+  enabled: true
+  pathType: ImplementationSpecific
+  apiVersion: "networking.k8s.io/v1"
+  hostname: wordpress.apps.example.com
+  path: /
+

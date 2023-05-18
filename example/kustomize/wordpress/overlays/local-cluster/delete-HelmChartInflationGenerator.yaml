@@ -1,0 +1,5 @@
+$patch: delete
+apiVersion: builtin
+kind: HelmChartInflationGenerator
+metadata:
+  name: wordpress-kustomize

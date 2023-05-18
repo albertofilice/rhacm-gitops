@@ -242,7 +242,7 @@ The first solution involves implementing an applicationset in argocd that levera
 ```yaml
           - git:
               files:
-                - path: example/multiple_sources/values.yaml
+                - path: example/multiple_sources/{{name}}/wordpress/values.yaml
               repoURL: 'https://github.com/albertofilice/rhacm-gitops.git'
               revision: main
 ```
@@ -269,7 +269,7 @@ spec:
           # Definition of the external git containing the Value File, this file is read and interpreted as a single string, which can be used in the application creation template with the variable {{ values }}
           - git:
               files:
-                - path: example/multiple_sources/{{name}}/values.yaml
+                - path: example/multiple_sources/{{name}}/wordpress/values.yaml
               repoURL: 'https://github.com/albertofilice/rhacm-gitops.git'
               revision: main
   template:
@@ -349,7 +349,7 @@ In this case we implemented a GIT containing a chart that exploits the helm char
 GIT directory structure:
 
 ```bash
-example/chart-dependency/wordpress
+example/chart-dependency/local-cluster/wordpress
     ├── Chart.yaml
     └── values.yaml
 ```
@@ -437,7 +437,7 @@ spec:
       project: default
       #Appointment to GIT containing the chart.yaml and values.yaml
       source:
-        path: example/chart_dependency/{{name}}
+        path: example/chart_dependency/{{name}}/wordpress
         repoURL: https://github.com/albertofilice/rhacm-gitops.git
         targetRevision: main
       # Defining sync options related to ARGOCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/.        
@@ -473,7 +473,7 @@ spec:
 This solution involves implementing kustomize for customization and ovveride on a per-cluster basis, and in particular is applicable with the following directory structure:
 
 ```bash
-example/kustomize/
+example/kustomize/wordpress
 ├── base
 │   ├── helm-chart.yaml
 │   ├── kustomization.yaml
@@ -540,18 +540,6 @@ The overlays feature exploits the chart created in the base by further customizi
 In the overlays/helm-chart.yaml the helm values to override per cluster are shown inline.
 
 ```yaml
-apiVersion: builtin
-kind: HelmChartInflationGenerator
-metadata:
-  name: wordpress-kustomize
-name: wordpress-kustomize
-repo: https://charts.bitnami.com/bitnami
-version: 16.0.4
-releaseName: wordpress
-valuesFile: values.yaml
-IncludeCRDs: false
-
-
 apiVersion: builtin
 kind: HelmChartInflationGenerator
 metadata:
@@ -624,7 +612,7 @@ spec:
       project: default     
       # Pointing to git, specifically to the specific overlays path. 
       source:   
-        path: example/kustomize/overlays/{{name}}
+        path: example/kustomize/wordpress/overlays/{{name}}
         repoURL: https://github.com/albertofilice/rhacm-gitops.git
         targetRevision: main
       # Defining sync options related to ARGOCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/.  
