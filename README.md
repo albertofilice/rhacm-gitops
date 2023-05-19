@@ -39,7 +39,7 @@ spec:
             - key: local-cluster
               operator: In
               values:
-                - true
+                - "true"
 ```
 to
 
@@ -415,7 +415,7 @@ spec:
             - key: local-cluster
               operator: In
               values:
-                - true
+                - "true"
 
 ```
 
@@ -565,7 +565,7 @@ spec:
             - key: local-cluster
               operator: In
               values:
-                - true
+                - "true"
 
 ```
 
@@ -738,7 +738,7 @@ spec:
             - key: local-cluster
               operator: In
               values:
-                - true
+                - "true"
 
 ```
 
