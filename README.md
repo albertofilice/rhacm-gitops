@@ -538,7 +538,7 @@ spec:
       project: default
       #Appointment to GIT containing the chart.yaml and values.yaml
       source:
-        path: example/chart_dependency/{{name}}/wordpress
+        path: example/chart-dependency/{{name}}/wordpress
         repoURL: https://github.com/albertofilice/rhacm-gitops.git
         targetRevision: main
       # Defining sync options related to ArgoCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/     
