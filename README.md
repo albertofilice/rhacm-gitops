@@ -289,7 +289,10 @@ Three independent solutions were produced for application management using Gitop
 
 **1. ApplicationSet with multiple sources**
 
-The first solution involves implementing an ApplicationSet in Argocd that leverages the WordPress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in Argocd be configured, and there must be a single values.yaml in the repo and a path indicated in the ApplicationSet.
+The first solution involves implementing an ApplicationSet in Argocd that leverages the WordPress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in Argocd be configured (Only for private repositories), and there must be a single values.yaml in the repo and a path indicated in the ApplicationSet.
+
+<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/53d031e5-13b3-4aa4-9ae3-cfdecf768901">
+
 
 ```yaml
           - git:
@@ -356,7 +359,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-gitops-opentelemetry
+  name: placement-gitops-wordpress-multiple-sources
   namespace: openshift-gitops
 spec:
   clusterSets:
@@ -365,10 +368,10 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: cluster-name
+            - key: local-cluster
               operator: In
               values:
-                - local-cluster
+                - true
 
 ```
 
@@ -512,10 +515,10 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: cluster-name
+            - key: local-cluster
               operator: In
               values:
-                - local-cluster
+                - true
 
 ```
 
@@ -685,10 +688,10 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: cluster-name
+            - key: local-cluster
               operator: In
               values:
-                - local-cluster
+                - true
 
 ```
 
