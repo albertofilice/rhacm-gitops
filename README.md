@@ -1,7 +1,11 @@
 # RedHat Advanced Cluster Manager - Openshift Gitops
-
+\
+\
+\
 ![image](https://github.com/albertofilice/rhacm-gitops/assets/35273403/40839582-be3c-49ee-ab5b-8dfd12cf9d74)
-
+\
+\
+\
 These configurations allow a vanilla helm to be used fully automatically in RHACM and/or Gitops without modifying basic helm charts in any way. We are going to see how deployment of Helm-based RHACM applications with external value files or advanced Helm customizations works.
 
 Here are the contents of this article:
@@ -14,7 +18,7 @@ C. Integrating Openshift Gitops with Red Advanced Cluster Manager
 
 D. Define and create an ApplicationSet for deploying apps.
 
-**Disclaimer**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
+**DISCLAIMER**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
 
 
 # Installing Openshift-Gitops and RHACM
@@ -278,8 +282,6 @@ spec:
     name: gitops-clusters
     namespace: openshift-gitops
 ```
-
-
 
 # ApplicationSet creation and application management using Gitops
 
