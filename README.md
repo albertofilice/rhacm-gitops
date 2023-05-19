@@ -736,7 +736,7 @@ metadata:
   namespace: openshift-gitops
 spec:
   clusterSets:
-    - noprod-clusterset
+    - sample-clusterset
   predicates:
     - requiredClusterSelector:
         labelSelector:
