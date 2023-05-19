@@ -1,5 +1,7 @@
 # RedHat Advanced Cluster Manager - Openshift Gitops
 
+![image](https://github.com/albertofilice/rhacm-gitops/assets/35273403/40839582-be3c-49ee-ab5b-8dfd12cf9d74)
+
 These configurations allow a vanilla helm to be used fully automatically in RHACM and/or Gitops without modifying basic helm charts in any way. We are going to see how deployment of Helm-based RHACM applications with external value files or advanced Helm customizations works.
 
 Here are the contents of this article:
