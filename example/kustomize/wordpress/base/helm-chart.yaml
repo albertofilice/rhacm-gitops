@@ -2,7 +2,7 @@ apiVersion: builtin
 kind: HelmChartInflationGenerator
 metadata:
   name: wordpress-kustomize
-name: wordpress-kustomize
+name: wordpress
 repo: https://charts.bitnami.com/bitnami
 version: 16.0.4
 releaseName: wordpress
