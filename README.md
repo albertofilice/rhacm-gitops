@@ -439,6 +439,9 @@ values: |
       networkType: subdomain
       enableNipIoRedirect: false
 ```
+# Final result
+
+The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
 
 <img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/d64106a0-8861-40d5-8894-41a8a712ff84">
 
@@ -568,6 +571,9 @@ spec:
                 - "true"
 
 ```
+# Final result
+
+The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
 
 <img width="1217" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/48e00f7d-a687-42a3-b5af-c5cebe580b95">
 
@@ -747,7 +753,10 @@ spec:
                 - "true"
 
 ```
-
 # Final result
 
-The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster.
+The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
+
+<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/1eaa9bf7-c5f8-4b4f-aff9-b5105dc446b9">
+
+<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/8f109c7c-daaf-422f-9137-cd15bd1fa873">
