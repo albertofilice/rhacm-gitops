@@ -20,6 +20,39 @@ D. Define and create an ApplicationSet for deploying apps.
 
 **DISCLAIMER**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
 
+In this example, we tested on the local cluster of Red Hat Advanced Cluster Manager, but everything is set up to deploy to multiple clusters. You need only edit the placement. For Examaple:
+
+From
+```yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-gitops-wordpress-multiple-sources
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+    - sample-clusterset
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: local-cluster
+              operator: In
+              values:
+                - true
+```
+to
+
+```yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-gitops-wordpress-multiple-sources
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+    - sample-clusterset
+```
 
 # Installing Openshift-Gitops and RHACM
 
@@ -238,6 +271,17 @@ oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-managemen
 oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-management:subscription-admin open-cluster-management:subscription-admin system:admin
 ```
 
+6. Define ClusterSet
+
+From RHACM Console
+
+<img width="1506" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/05ca337c-6eac-4d2b-a218-e271088ff5d0">
+
+
+```bash
+oc label managedcluster local-cluster cluster.open-cluster-management.io/clusterset=sample-clusterset --overwrite
+```
+
 
 # Integrating Openshift Gitops with Red Advanced Cluster Manager
 
@@ -395,6 +439,9 @@ values: |
       networkType: subdomain
       enableNipIoRedirect: false
 ```
+
+<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/d64106a0-8861-40d5-8894-41a8a712ff84">
+
 
 **2. ApplicationSet with chart dependency**
 
