@@ -454,7 +454,7 @@ example/chart-dependency/local-cluster/wordpress
     └── values.yaml
 ```
 
-The chart.yaml will contain a new chart helm with a dependency on the WordPress chart.
+The Chart.yaml will contain a new chart helm with a dependency on the WordPress chart.
 
 ```yaml
 apiVersion: v2
@@ -568,6 +568,12 @@ spec:
                 - "true"
 
 ```
+
+<img width="1217" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/48e00f7d-a687-42a3-b5af-c5cebe580b95">
+
+<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/748c0ed0-a5ce-433d-be25-7a19088da302">
+
+
 
 **3. ApplicationSet with kustomize**
 
