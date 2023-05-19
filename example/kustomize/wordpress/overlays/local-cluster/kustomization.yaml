@@ -6,4 +6,4 @@ patchesStrategicMerge:
   - delete-HelmChartInflationGenerator.yaml
 
 resources:
-- ../../base
+- ../base
