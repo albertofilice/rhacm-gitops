@@ -1,16 +1,18 @@
 # RedHat Advanced Cluster Manager - Openshift Gitops
 
-These configurations allow a vanilla helm to be used, fully automatically, in RHACM and/or Gitops, without modify basic helm charts in any way.We are going to see how deployment of Helm-based RHACM applications with external value files or advanced helm customizations.
+These configurations allow a vanilla helm to be used fully automatically in RHACM and/or Gitops without modifying basic helm charts in any way. We are going to see how deployment of Helm-based RHACM applications with external value files or advanced Helm customizations works.
 
 Here are the contents of this article:
 
-A.  Installing RedHat Advanced Cluster Manager (RHACM)
+A. Installing RedHat Advanced Cluster Manager (RHACM)
 
-B.  Installing Openshift Gitops (ArgoCD) on Hub Cluster
+B. Installing Openshift Gitops (ArgoCD) on a Hub Cluster
 
-C.  Integrating Openshift Gitops with Red Advanced Cluster Manager
+C. Integrating Openshift Gitops with Red Advanced Cluster Manager
 
-D.  Define and create applicationsset for deploying app
+D. Define and create an ApplicationSet for deploying apps.
+
+**Disclaimer**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
 
 
 # Installing Openshift-Gitops and RHACM
@@ -30,7 +32,7 @@ kind: Namespace
 metadata:
   name: open-cluster-management
 ```
-2. Deployment of the operator
+2. Operator Deployment
 
 ```yaml
 apiVersion: operators.coreos.com/v1alpha1
@@ -84,7 +86,7 @@ roleRef:
   name: cluster-admin
 ```
 
-4. ArgoCD Cluster Installation
+4. ArgoCD and RHACM Cluster Installation
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -233,7 +235,7 @@ oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-managemen
 
 # Integrating Openshift Gitops with Red Advanced Cluster Manager
 
-The ManagedClusterSetBinding and placement are used to intercept and configure the clusters present on RHACM also in ArgoCD, it is possible to customize these configurations by excluding specific clusters.
+ManagedClusterSetBinding and placement are used to intercept and configure the clusters present on RHACM and in ArgoCD. It is possible to customize these configurations by excluding specific clusters.
 
 ```yaml
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -277,13 +279,13 @@ spec:
 
 
 
-# Applicationset creation and application management using Gitops
+# ApplicationSet creation and application management using Gitops
 
-3 independent solutions were produced for application management using Gitops, we used the "wordpress" chart from https://charts.bitnami.com/bitnami as a demo.
+Three independent solutions were produced for application management using Gitops; we used the "wordpress" chart from https://charts.bitnami.com/bitnami as a demo.
 
 **1. ApplicationSet with multiple sources**
 
-The first solution involves implementing an applicationset in argocd that leverages the wordpress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in argocd be configured and there must be a single values.yaml in the repo and path indicated in the applicationset.
+The first solution involves implementing an ApplicationSet in Argocd that leverages the WordPress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in Argocd be configured, and there must be a single values.yaml in the repo and a path indicated in the ApplicationSet.
 
 ```yaml
           - git:
@@ -293,7 +295,7 @@ The first solution involves implementing an applicationset in argocd that levera
               revision: main
 ```
 
-Below is an example of applicationset used for this case study:
+Below is an example of ApplicationSet used for this case study:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -305,14 +307,14 @@ spec:
   generators:
     - matrix:
         generators:
-          # definizione e intercettazione dei cluster tramite placemente RHACM
+          # definition and interception of clusters via placemente RHACM.
           - clusterDecisionResource:
               configMapRef: acm-placement
               labelSelector:
                 matchLabels:
                   cluster.open-cluster-management.io/placement: placement-gitops-wordpress-multiple-sources
             requeueAfterSeconds: 180
-          # Definition of the external git containing the Value File, this file is read and interpreted as a single string, which can be used in the application creation template with the variable {{ values }}
+          # Definition of the external git containing the Value File. This file is read and interpreted as a single string, which can be used in the application creation template with the variable {{ values }}
           - git:
               files:
                 - path: example/multiple_sources/{{name}}/wordpress/values.yaml
@@ -322,10 +324,10 @@ spec:
     metadata:
       labels:
         velero.io/exclude-from-backup: 'true'
-      # name is autogenerated and contains the cluster name present in RHACM "{{name}}" in order to avoid duplicate applications. For example "wordpress-multiple-sources-local-cluster"
+      # name is autogenerated and contains the cluster name present in RHACM "{{name}}" in order to avoid duplicate applications. For example, "wordpress-multiple-sources-local-cluster"
       name: 'wordpress-multiple-sources-{{name}}'
     spec:
-      # Targer of the installation, the server is a system variable and provides the API url, e.g. "https://api.cluster.example.com:6443"
+      # Targer of the installation, the server is a system variable and provides the API url, for example, "https://api.cluster.example.com:6443"
       destination:
         namespace: wordpress-multiple-sources
         server: '{{server}}'
@@ -338,7 +340,7 @@ spec:
             {{values}}        
         repoURL: 'https://charts.bitnami.com/bitnami'
         targetRevision: 16.0.4
-      # Defining sync options related to ARGOCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/.
+      # Defining sync options related to ArgoCD: https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/
       syncPolicy:
         automated:
           prune: true
@@ -366,9 +368,8 @@ spec:
 
 ```
 
-Example of values.yaml
-
-For this to work, all overrides must be contained in 
+Example of values.yaml\
+For this to work, all overrides must be contained in
 `values: |`
 
 ```yaml
@@ -390,17 +391,17 @@ values: |
 
 **2. ApplicationSet with chart dependency**
 
-In this case we implemented a GIT containing a chart that exploits the helm chart present on bitnami repository as a dependency.
+In this case, we implemented a GIT containing a chart that exploits the Helm chart present on the Bitnami repository as a dependency.
 
-GIT directory structure:
-
+GIT directory structure:\
 ```bash
 example/chart-dependency/local-cluster/wordpress
     ├── Chart.yaml
     └── values.yaml
 ```
 
-The chart.yaml will contain a new chart helm with dependency to the wordpress chart
+The chart.yaml will contain a new chart helm with a dependency on the WordPress chart.
+
 ```yaml
 apiVersion: v2
 name: wordpress-custom-chart
@@ -432,7 +433,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
 
 ```
-The values.yaml will contain all the ovveride values, which must be contained in the name of the chart present on bitnami and cited as a dependency.
+The values.yaml will contain all the ovveride values, which must be contained in the name of the chart present on Bitnami and cited as a dependency.
 
 ```yaml
 wordpress:
@@ -452,7 +453,7 @@ wordpress:
 ```
 
 
-Below is an example of applicationset used for this case study:
+Below is an example of ApplicationSet used for this case study:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -470,13 +471,13 @@ spec:
             cluster.open-cluster-management.io/placement: wordpress-chart-dependency-placement
         requeueAfterSeconds: 180
   template:
-    # name is autogenerated and contains the cluster name present in RHACM "{{name}}" in order to avoid duplicate applications. For example "wordpress-chart-dependency-local-cluster"  
+    # name is autogenerated and contains the cluster name present in RHACM "name" in order to avoid duplicate applications. For example, "wordpress-chart-dependency-local-cluster."  
     metadata:
       name: wordpress-chart-dependency-{{name}}
       labels:
         velero.io/exclude-from-backup: "true"
     spec:
-      # Targer of the installation, the server is a system variable and provides the API url, e.g. "https://api.cluster.example.com:6443"    
+      # Targer of the installation, the server is a system variable and provides the API url, for example, "https://api.cluster.example.com:6443"    
       destination:
         namespace: wordpress-chart-dependency
         server: "{{server}}"
@@ -486,7 +487,7 @@ spec:
         path: example/chart_dependency/{{name}}/wordpress
         repoURL: https://github.com/albertofilice/rhacm-gitops.git
         targetRevision: main
-      # Defining sync options related to ARGOCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/.        
+      # Defining sync options related to ArgoCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/     
       syncPolicy:
         automated:
           prune: true
@@ -516,7 +517,7 @@ spec:
 
 **3. ApplicationSet with kustomize**
 
-This solution involves implementing kustomize for customization and ovveride on a per-cluster basis, and in particular is applicable with the following directory structure:
+This solution involves implementing Kustomize for customization and Ovveride on a per-cluster basis, and in particular is applicable with the following directory structure:
 
 ```bash
 example/kustomize/wordpress
@@ -531,9 +532,9 @@ example/kustomize/wordpress
         └── kustomization.yaml
 ```
 
-Where in base will be all the common parameters applicable on each cluster, and in overlays is the customization defined on the individual cluster.
+In base will be all the common parameters applicable to each cluster, and in overlays will be the customization defined for each cluster.
 
-In the base/helm-chart.yaml is expressed the definition of the chart present in bitnami and the reference to the value file containing the compatible values for all clusters
+In base/helm-chart.yaml is expressed the definition of the chart present in Bitnami and the reference to the value file containing the compatible values for all clusters.
 
 ```yaml
 apiVersion: builtin
@@ -579,11 +580,9 @@ resources:
 generators:
 - helm-chart.yaml
 ```
-The generators feature allows you to leverage the helm plugin in kustomize, dynamically creating a chart containing the indicated overrides. Only one override values.yaml can be configured.
+The generators feature allows you to leverage the helm plugin in Kustomize, dynamically creating a chart containing the indicated overrides. Only one overrides values.yaml can be configured. The overlays feature exploits the chart created in the base by further customizing the chart, specifically:
 
-The overlays feature exploits the chart created in the base by further customizing the chart, specifically:
-
-In the overlays/helm-chart.yaml the helm values to override per cluster are shown inline.
+In overlays/helm-chart.yaml, the helm values to override per cluster are shown inline.
 
 ```yaml
 apiVersion: builtin
@@ -618,7 +617,7 @@ patchesStrategicMerge:
 resources:
 - ../../base
 ```
-The file overlays/delete-HelmChartInflationGenerator.yaml is useful in order to avoid a loop in the merge of the HelmChartInflationGenerator resource. Therefore, this resource is deleted and not configured in Argocd, as this resource is only exploited by kustomize build for chart creation.
+The file overlays/delete-HelmChartInflationGenerator.yaml is useful in order to avoid a loop in the merge of the HelmChartInflationGenerator resource. Therefore, this resource is deleted and not configured in Argocd, as this resource is only exploited by the Kustomize build for chart creation.
 ```yaml
 $patch: delete
 apiVersion: builtin
@@ -627,7 +626,7 @@ metadata:
   name: wordpress-kustomize
 ```
 
-Below is an example of applicationset used for this case study:
+Below is an example of ApplicationSet used for this case study:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -645,13 +644,13 @@ spec:
             cluster.open-cluster-management.io/placement: wordpress-kustomize-placement
         requeueAfterSeconds: 180
   template:
-    # name is autogenerated and contains the cluster name present in RHACM "{{name}}" in order to avoid duplicate applications. For example "wordpress-kustomize-local-cluster"
+    # name is autogenerated and contains the cluster name present in RHACM "{{name}}" in order to avoid duplicate applications. For example, "wordpress-kustomize-local-cluster"
     metadata:
       name: wordpress-kustomize-{{name}}
       labels:
         velero.io/exclude-from-backup: "true"
     spec:
-      # Targer of the installation, the server is a system variable and provides the API url, e.g. "https://api.cluster.example.com:6443" 
+      # Targer of the installation, the server is a system variable and provides the API url, for example, "https://api.cluster.example.com:6443" 
       destination:
         namespace: wordpress-kustomize
         server: "{{server}}"
@@ -661,7 +660,7 @@ spec:
         path: example/kustomize/wordpress/overlays/{{name}}
         repoURL: https://github.com/albertofilice/rhacm-gitops.git
         targetRevision: main
-      # Defining sync options related to ARGOCD https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/.  
+      # Defining sync options related to ArgoCD: https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/
       syncPolicy:
         automated:
           prune: true
@@ -691,4 +690,4 @@ spec:
 
 # Final result
 
-The end result of these implementations is the creation of An Argocd Application, derived from the applicationset and dynamically created based on the reference cluster.
+The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster.
