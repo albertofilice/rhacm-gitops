@@ -20,6 +20,15 @@ D. Define and create an ApplicationSet for deploying apps.
 
 **DISCLAIMER**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
 
+**USEFUL ADDITIONS**
+For your convenience, you can perform openshift-gitops and Red Hat Advanced Cluster Management installations by running the following commands:
+
+```bash
+git clone https://github.com/albertofilice/rhacm-gitops.git
+cd rhacm-gitops
+oc apply -k bootstrap/
+```
+
 In this example, we tested on the local cluster of Red Hat Advanced Cluster Manager, but everything is set up to deploy to multiple clusters. You need only edit the placement. For Examaple:
 
 From
