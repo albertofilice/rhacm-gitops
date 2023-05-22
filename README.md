@@ -2,7 +2,7 @@
 \
 \
 \
-![image](https://github.com/albertofilice/rhacm-gitops/assets/35273403/40839582-be3c-49ee-ab5b-8dfd12cf9d74)
+![image](assets/flow.png)
 \
 \
 \
@@ -284,7 +284,7 @@ oc adm policy add-cluster-role-to-user --rolebinding-name=open-cluster-managemen
 
 From RHACM Console
 
-<img width="1506" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/05ca337c-6eac-4d2b-a218-e271088ff5d0">
+<img width="1506" alt="image" src="assets/managed-cluster.png">
 
 
 ```bash
@@ -344,7 +344,7 @@ Three independent solutions were produced for application management using Gitop
 
 The first solution involves implementing an ApplicationSet in Argocd that leverages the WordPress chart and instead pulls the helm value from an external git. This solution has as a prerequisite that the git repository in Argocd be configured (Only for private repositories), and there must be a single values.yaml in the repo and a path indicated in the ApplicationSet.
 
-<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/53d031e5-13b3-4aa4-9ae3-cfdecf768901">
+<img width="1512" alt="image" src="assets/argocd-repo.png">
 
 
 ```yaml
@@ -452,7 +452,7 @@ values: |
 
 The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
 
-<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/d64106a0-8861-40d5-8894-41a8a712ff84">
+<img width="1512" alt="image" src="assets/multiple-sources-output-argocd.png">
 
 
 **2. ApplicationSet with chart dependency**
@@ -584,9 +584,9 @@ spec:
 
 The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
 
-<img width="1217" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/48e00f7d-a687-42a3-b5af-c5cebe580b95">
+<img width="1217" alt="image" src="assets/chart-dependency-output-rhacm.png">
 
-<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/748c0ed0-a5ce-433d-be25-7a19088da302">
+<img width="1512" alt="image" src="assets/chart-dependency-output-argocd.png">
 
 
 
@@ -766,6 +766,6 @@ spec:
 
 The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
 
-<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/1eaa9bf7-c5f8-4b4f-aff9-b5105dc446b9">
+<img width="1512" alt="image" src="assets/kustomize-output-rhacm.png">
 
-<img width="1512" alt="image" src="https://github.com/albertofilice/rhacm-gitops/assets/35273403/8f109c7c-daaf-422f-9137-cd15bd1fa873">
+<img width="1512" alt="image" src="assets/kustomize-output-argocd.png">
