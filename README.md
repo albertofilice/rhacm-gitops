@@ -1,4 +1,4 @@
-# RedHat Advanced Cluster Manager - OpenShift Gitops
+# Helm-Based Applications on RedHat Advanced Cluster Manager & OpenShift Gitops
 \
 \
 \
