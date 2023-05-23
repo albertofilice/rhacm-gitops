@@ -1,4 +1,4 @@
-# RedHat Advanced Cluster Manager - Openshift Gitops
+# RedHat Advanced Cluster Manager - OpenShift Gitops
 \
 \
 \
@@ -6,22 +6,26 @@
 \
 \
 \
+Argo CD is an open-source GitOps continuous delivery tool. It allows you to monitor applications on the cluster stored in a Git repository.
+
+The main difficulty in Argocd is managing values related to Helm applications, particularly in the case where you use a public Helm chart and want to historicize your value file in your own private git.
+
 These configurations allow a vanilla helm to be used fully automatically in RHACM and/or Gitops without modifying basic helm charts in any way. We are going to see how deployment of Helm-based RHACM applications with external value files or advanced Helm customizations works.
 
 Here are the contents of this article:
 
 A. Installing RedHat Advanced Cluster Manager (RHACM)
 
-B. Installing Openshift Gitops (ArgoCD) on a Hub Cluster
+B. Installing OpenShift Gitops (ArgoCD) on a Hub Cluster
 
-C. Integrating Openshift Gitops with Red Advanced Cluster Manager
+C. Integrating OpenShift Gitops with Red Advanced Cluster Manager
 
 D. Define and create an ApplicationSet for deploying apps.
 
 **DISCLAIMER**: This is only a means to show a possible helm-based application implementation on multiple clusters with RHACM and Gitops. It is not a supported guide but simply shows the necessary structures and methods. Do not use this model in a production environment without proper adaptation and testing.
 
 **USEFUL ADDITIONS**
-For your convenience, you can perform openshift-gitops and Red Hat Advanced Cluster Management installations by running the following commands:
+For your convenience, you can perform OpenShift Gitops and Red Hat Advanced Cluster Management installations by running the following commands:
 
 ```bash
 git clone https://github.com/albertofilice/rhacm-gitops.git
@@ -63,7 +67,7 @@ spec:
     - sample-clusterset
 ```
 
-# Installing Openshift-Gitops and RHACM
+# Installing OpenShift Gitops and RHACM
 
 1. Create Namespace
 
@@ -292,7 +296,7 @@ oc label managedcluster local-cluster cluster.open-cluster-management.io/cluster
 ```
 
 
-# Integrating Openshift Gitops with Red Advanced Cluster Manager
+# Integrating OpenShift Gitops with Red Advanced Cluster Manager
 
 ManagedClusterSetBinding and placement are used to intercept and configure the clusters present on RHACM and in ArgoCD. It is possible to customize these configurations by excluding specific clusters.
 
@@ -448,11 +452,6 @@ values: |
       networkType: subdomain
       enableNipIoRedirect: false
 ```
-# Final result
-
-The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
-
-<img width="1512" alt="image" src="assets/multiple-sources-output-argocd.png">
 
 
 **2. ApplicationSet with chart dependency**
@@ -580,15 +579,6 @@ spec:
                 - "true"
 
 ```
-# Final result
-
-The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
-
-<img width="1217" alt="image" src="assets/chart-dependency-output-rhacm.png">
-
-<img width="1512" alt="image" src="assets/chart-dependency-output-argocd.png">
-
-
 
 **3. ApplicationSet with kustomize**
 
@@ -764,7 +754,7 @@ spec:
 ```
 # Final result
 
-The end result of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager.
+The end result of one of these implementations is the creation of an Argocd application, derived from the ApplicationSet and dynamically created based on the reference cluster configured in RedHat Advanced Cluster Manager. On the RHACM or ArgoCD dashboard, you can see your applications, for example:
 
 <img width="1512" alt="image" src="assets/kustomize-output-rhacm.png">
 
