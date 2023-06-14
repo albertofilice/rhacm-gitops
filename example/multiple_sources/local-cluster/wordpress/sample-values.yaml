@@ -1,0 +1,37 @@
+wordpressUsername: user
+wordpressPassword: ''
+wordpressEmail: user@example.com
+wordpressFirstName: FirstName
+wordpressLastName: LastName
+wordpressBlogName: User's Blog!
+wordpressTablePrefix: wp_
+wordpressScheme: http
+wordpressSkipInstall: false
+wordpressConfigureCache: true
+smtpHost: ''
+smtpPort: ''
+smtpUser: ''
+smtpPassword: ''
+smtpProtocol: ''
+replicaCount: 1
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteMany
+  accessMode: ReadWriteMany
+  size: 5Gi
+mariadb:
+  enabled: true
+  architecture: standalone
+  auth:
+    rootPassword: ''
+    database: bitnami_wordpress
+    username: bn_wordpress
+    password: ''
+  primary:
+    persistence:
+      enabled: true
+      storageClass: ''
+      accessModes:
+        - ReadWriteOnce
+      size: 3Gi

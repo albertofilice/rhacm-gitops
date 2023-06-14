@@ -432,6 +432,73 @@ spec:
 
 ```
 
+Also, you can use the new multi-source function directly:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: wordpress-multiple-sources
+  namespace: openshift-gitops
+spec:
+  goTemplate: true
+  generators:
+  - clusterDecisionResource:
+      configMapRef: acm-placement
+      labelSelector:
+        matchLabels:
+          cluster.open-cluster-management.io/placement: placement-gitops-wordpress-multiple-sources
+      requeueAfterSeconds: 180
+  syncPolicy:
+    preserveResourcesOnDeletion: false
+  template:
+    metadata:
+      name: 'wordpress-multiple-sources-{{.name}}'
+      annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+    spec:
+      project: default
+      destination:
+        server: '{{server}}'
+        namespace: wordpress-multiple-sources
+      sources:
+        - repoURL: https://charts.bitnami.com/bitnami
+          chart: wordpress
+          targetRevision: 16.0.4
+          helm:
+            releaseName: 'wordpress-multiple-sources-{{name}}'
+            valueFiles:
+              - $values/example/multiple_sources/{{name}}/wordpress/sample-values.yaml
+        - repoURL: https://github.com/albertofilice/rhacm-gitops.git
+          targetRevision: main
+          ref: values
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-gitops-wordpress-multiple-sources
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+    - sample-clusterset
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: local-cluster
+              operator: In
+              values:
+                - "true"
+```
+
+
 Example of values.yaml\
 For this to work, all overrides must be contained in
 `values: |`
